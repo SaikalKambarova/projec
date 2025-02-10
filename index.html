@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Жазира - Магазин Стиля и Комфорта</title>
+  <!-- Подключение шрифтов -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Сброс стилей */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f6f6f6;
+      overflow-x: hidden;
+      color: #333;
+      line-height: 1.6;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Хедер и навигация */
+    header {
+      width: 100%;
+      padding: 20px 50px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    header .logo {
+      width: 120px;
+      height: 40px;
+      overflow: hidden;
+    }
+    header .logo img {
+      width: 120px;
+      object-fit: cover;
+      margin-top: -10px;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+    nav ul li a {
+      font-size: 1em;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    nav ul li a:hover {
+      color: #e63946;
+    }
+    /* Бургер-меню (на мобильных устройствах) */
+    .burger-menu {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 4px;
+      margin-left: 20px;
+    }
+    .burger-menu span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    /* Иконка корзины */
+    .cart-icon {
+      margin-left: 20px;
+      cursor: pointer;
+      position: relative;
+    }
+    .cart-icon img {
+      width: 38px;
+      height: 38px;
+    }
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e63946;
+      color: #fff;
+      font-size: 0.8em;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Герой-секция */
+    .hero {
+      height: 100vh;
+      background: linear-gradient(135deg, #e63946 0%, #f1faee 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+      overflow: hidden;
+      background-image: url(./heroBG.avif);
+      background-size: cover;
+      background-position: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+    .hero h1, .hero p, .hero .btn {
+      position: relative;
+      z-index: 2;
+    }
+    .hero h1 {
+      font-size: 3.5em;
+      color: #fff;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease-out;
+    }
+    .hero p {
+      font-size: 1.2em;
+      color: #f1faee;
+      margin-bottom: 40px;
+      max-width: 600px;
+      animation: fadeInUp 1s ease-out;
+    }
+    .hero .btn {
+      background: #f1faee;
+      color: #e63946;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.3s ease;
+      animation: popIn 1s ease-out;
+    }
+    .hero .btn:hover {
+      background: #e63946;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Анимации */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Секция товаров */
+    .products {
+      padding: 100px 50px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+    }
+    .product {
+      background: #f9f9f9;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product:hover img {
+      transform: scale(1.1);
+    }
+    .product-content {
+      padding: 20px;
+    }
+    .product-content h3 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+      color: #e63946;
+    }
+    .product-content p {
+      font-size: 0.95em;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .product-content .price {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .product-content .buy-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #e63946;
+      color: #fff;
+      border-radius: 30px;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+    .product-content .buy-btn:hover {
+      background: #bf2f3a;
+    }
+
+    /* Секции "О нас", "Наши услуги", "Преимущества" */
+    .fancy-section {
+      position: relative;
+      padding: 120px 50px;
+      text-align: center;
+      overflow: hidden;
+      color: #fff;
+    }
+    .grayBg{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      background-color: #0000007e;
+    }
+    /* Фон с наложением градиента и параллаксом */
+    .fancy-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      filter: brightness(0.6);
+      animation: zoomIn 20s linear infinite;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+    .fancy-section .content {
+      position: relative;
+      z-index: 3;
+      max-width: 1000px;
+      margin: 0 auto;
+      animation: fadeIn 1s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .fancy-section h2 {
+      font-size: 3em;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      animation: slideIn 1s ease-out;
+    }
+    .fancy-section p {
+      font-size: 1.2em;
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+    .fancy-section .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .fancy-section .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border-radius: 10px;
+      padding: 20px;
+      width: 280px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .fancy-section .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .fancy-section .card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+    }
+    .fancy-section .card h3 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
+    .fancy-section .card p {
+      font-size: 0.95em;
+    }
+    /* Специфичные стили для каждой секции */
+    #about {
+      background-size:cover;
+      background-image: url('./bg1.jpg');
+    }
+    #services {
+      background-size:cover;
+      background-image: url('./bgg.avif');
+    }
+   
+    .fancy-section .btn {
+      background: #e63946;
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      /* width: 120px; */
+    }
+    .fancy-section .btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    footer {
+      background: #333;
+      color: #ccc;
+      padding: 40px 50px;
+      text-align: center;
+    }
+    footer p { font-size: 0.9em; }
+
+    /* Модальное окно для корзины */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: #fff;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      animation: popIn 0.5s ease;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-content h2 { margin-bottom: 20px; color: #e63946; }
+    .modal-content .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #333;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item p { font-size: 1em; }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      header { padding: 15px 20px; flex-wrap: wrap; }
+      nav ul {
+        flex-direction: column;
+        gap: 15px;
+        background: #fff;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        display: none;
+      }
+      nav ul.active { display: flex; }
+      .burger-menu { display: flex; }
+      .cart-icon { margin-left: 10px; }
+      .fancy-section .cards { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Хедер -->
+  <header>
+    <div class="logo">
+      <img src="./logo.png" alt="Логотип">
+    </div>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#hero">Главная</a></li>
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#services">Наши услуги</a></li>
+        <li><a href="#products">Товары</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+      <!-- Бургер-меню -->
+      <div class="burger-menu" id="burger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <!-- Иконка корзины -->
+      <div class="cart-icon" id="cart-icon">
+        <img src="./cart.png" alt="Корзина">
+        <div class="cart-count" id="cart-count">0</div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Герой-секция -->
+  <section class="hero" id="hero">
+    <h1>Добро пожаловать в Жазира</h1>
+    <p>Магазин, где каждая деталь создана для Вашего максимального комфорта. Откройте для себя уникальные товары, созданные с душой и вниманием к деталям.</p>
+    <a href="#products" class="btn">К покупкам</a>
+  </section>
+  <section class="products" id="products">
+    <!-- Здесь будут отображаться товары -->
+  </section>
+
+  <!-- Секция "О нас" с интересным дизайном -->
+  <section class="fancy-section" id="about">
+    <div class="grayBg"></div>
+    <div class="content">
+      <h2>О нас</h2>
+      <p>Мы — команда профессионалов, посвятившая себя созданию магазина, где стиль и комфорт сочетаются в каждой детали. Наша миссия – предлагать лучшие решения для вашего дома.</p>
+      <div class="cards">
+        <div class="card">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/teamwork.png" alt="Команда">
+          <h3>Команда экспертов</h3>
+          <p>Наш коллектив — это профессионалы, любящие свою работу.</p>
+        </div>
+        <div class="card">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/idea.png" alt="Идеи">
+          <h3>Свежие идеи</h3>
+          <p>Мы постоянно ищем новые тренды и решения для вашего уюта.</p>
+        </div>
+        <div class="card">
+          <img src="https://img.icons8.com/m_rounded/512w/FFFFFF/warranty.png" alt="Качество">
+          <h3>Гарантия качества</h3>
+          <p>Мы тщательно отбираем продукцию для вашего максимального комфорта.</p>
+        </div>
+      </div>
+      <a href="#contacts" class="btn">Связаться с нами</a>
+    </div>
+  </section>
+
+  <!-- Секция "Наши услуги" с карточками -->
+  <section class="fancy-section" id="services">
+    <div class="grayBg"></div>
+    <div class="content">
+      <h2>Наши услуги</h2>
+      <p>Мы предлагаем комплексный сервис: от консультаций до быстрой доставки и индивидуальных заказов. Мы всегда рядом, чтобы помочь вам сделать лучший выбор.</p>
+      <div class="cards">
+        <div class="card">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/consultation.png" alt="Консультация">
+          <h3>Консультации</h3>
+          <p>Наши специалисты помогут подобрать лучшие товары для вас.</p>
+        </div>
+        <div class="card">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/delivery.png" alt="Доставка">
+          <h3>Быстрая доставка</h3>
+          <p>Мы доставляем заказы максимально оперативно и качественно.</p>
+        </div>
+        <div class="card">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/worker-male.png" alt="Индивидуальный подход">
+          <h3>Индивидуальный подход</h3>
+          <p>Мы учитываем все пожелания, чтобы каждый клиент был доволен.</p>
+        </div>
+      </div>
+      <a href="#contacts" class="btn">Узнать больше</a>
+    </div>
+  </section>
+
+
+  
+
+  <!-- Контактная информация -->
+  <section id="contacts" style="padding: 80px 50px; background: #f1faee; text-align: center;">
+    <h2 style="font-size: 2em; margin-bottom: 20px; color: #e63946;">Свяжитесь с нами</h2>
+    <p style="font-size: 1.1em;">Email: info@jazira.ru | Телефон: +996 702 324 720</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Жазира. Все права защищены.</p>
+  </footer>
+
+  <!-- Модальное окно для корзины -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
+      <span class="close-modal" id="close-modal">&times;</span>
+      <h2>Ваша корзина</h2>
+      <div id="cart-items">
+        <p id="empty-cart">В корзине пока нет товаров.</p>
+      </div>
+      <button>Купить</button>
+    </div>
+  </div>
+
+  <!-- JavaScript для интерактивности -->
+  <script>
+    // Бургер-меню
+    const burgerMenu = document.getElementById('burger-menu');
+    const navList = document.getElementById('nav-list');
+    burgerMenu.addEventListener('click', () => {
+      navList.classList.toggle('active');
+      burgerMenu.classList.toggle('active');
+    });
+
+    // Рендер товаров
+    const productsBlock = document.getElementById('products');
+    const data = [
+      {
+        img: "./img/1.webp",
+        name: "Красные яблоки",
+        title: "Свежие красные яблоки, 1 кг",
+        price: 47
+      },
+      {
+        img: "./img/2.webp",
+        name: "Молоко 2.5%",
+        title: "Натуральное пастеризованное молоко, 1 л",
+        price: 60
+      },
+      {
+        img: "./img/3.avif",
+        name: "Хлеб пшеничный",
+        title: "Свежий пшеничный хлеб, 1 буханка",
+        price: 65
+      },
+      {
+        img: "./img/4.avif",
+        name: "Говядина охлажденная",
+        title: "Свежая говядина, 1 кг",
+        price: 577
+      },
+      {
+        img: "./img/5.avif",
+        name: "Бананы",
+        title: "Свежие бананы, 1 кг",
+        price: 50
+      },
+      {
+        img: "./img/6.avif",
+        name: "Яйца куриные",
+        title: "Свежие куриные яйца, 10 шт.",
+        price: 70
+      },
+      {
+        img: "./img/7.avif",
+        name: "Сыр Гауда",
+        title: "Нидерландский сыр Гауда, 1 кг",
+        price: 450
+      },
+      {
+        img: "./img/8.avif",
+        name: "Помидоры",
+        title: "Свежие помидоры, 1 кг",
+        price: 80
+      },
+      {
+        img: "./img/9.jpeg",
+        name: "Огурцы",
+        title: "Свежие огурцы, 1 кг",
+        price: 60
+      },
+      {
+        img: "./img/10.avif",
+        name: "Картофель",
+        title: "Свежий картофель, 1 кг",
+        price: 30
+      },
+      {
+        img: "./img/11.avif",
+        name: "Лук репчатый",
+        title: "Свежий репчатый лук, 1 кг",
+        price: 25
+      },
+      {
+        img: "./img/12.jpeg",
+        name: "Морковь",
+        title: "Свежая морковь, 1 кг",
+        price: 35
+      },
+      {
+        img: "./img/13.avif",
+        name: "Сахар-песок",
+        title: "Белый сахар-песок, 1 кг",
+        price: 50
+      },
+      {
+        img: "./img/14.avif",
+        name: "Рис",
+        title: "Рис шлифованный, 1 кг",
+        price: 70
+      },
+      {
+        img: "./img/15.avif",
+        name: "Макароны",
+        title: "Макароны из твердых сортов пшеницы, 1 кг",
+        price: 60
+      },
+      {
+        img: "./img/16.avif",
+        name: "Масло подсолнечное",
+        title: "Рафинированное подсолнечное масло, 1 л",
+        price: 100
+      },
+      {
+        img: "./img/17.avif",
+        name: "Куриное филе",
+        title: "Свежее куриное филе, 1 кг",
+        price: 200
+      },
+      {
+        img: "./img/18.avif",
+        name: "Сметана 15%",
+        title: "Сметана 15% жирности, 400 г",
+        price: 80
+      },
+      {
+        img: "./img/19.png",
+        name: "Кефир 1%",
+        title: "Кефир 1% жирности, 1 л",
+        price: 70
+      },
+      {
+        img: "./img/20.jpg",
+        name: "Йогурт натуральный",
+        title: "Натуральный йогурт без добавок, 500 г",
+        price: 90
+      },
+      {
+        img: "./img/21.avif",
+        name: "Апельсины",
+        title: "Свежие апельсины, 1 кг",
+        price: 100
+      },
+      {
+        img: "./img/22.avif",
+        name: "Гречневая крупа",
+        title: "Гречневая крупа, 1 кг",
+        price: 80
+      },
+      {
+        img: "./img/23.avif",
+        name: "Мед натуральный",
+        title: "Натуральный цветочный мед, 500 г",
+        price: 250
+      },
+      {
+        img: "./img/24.avif",
+        name: "Чай черный",
+        title: "Черный байховый чай, 100 г",
+        price: 120
+      }
+    ];
+    const RenderProducts = () => {
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('product');
+        div.innerHTML = `
+          <div class="product" data-id='${item.id}' data-name='${item.name}' data-price='${item.price}'>
+            <img src="${item.img}" alt="${item.name}">
+            <div class="product-content">
+              <h3>${item.name}</h3>
+              <p>${item.title}</p>
+              <div class="price">${item.price} COM</div>
+              <div class="buy-btn">Купить</div>
+            </div>
+          </div>
+        `;
+        productsBlock.append(div);
+      });
+    }
+    RenderProducts();
+
+    // Корзина
+    const cartIcon = document.getElementById('cart-icon');
+    const cartModal = document.getElementById('cart-modal');
+    const closeModal = document.getElementById('close-modal');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    let cart = [];
+    function updateCartDisplay() {
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p id="empty-cart">В корзине пока нет товаров.</p>';
+      } else {
+        cart.forEach(item => {
+          const itemElem = document.createElement('div');
+          itemElem.classList.add('cart-item');
+          itemElem.innerHTML = `
+            <p><strong>${item.name}</strong> x ${item.quantity}</p>
+            <p>KGZ ${item.price * item.quantity}</p>
+          `;
+          cartItemsContainer.appendChild(itemElem);
+        });
+      }
+      cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
+    // Открытие/закрытие модального окна корзины
+    cartIcon.addEventListener('click', () => {
+      cartModal.classList.add('active');
+    });
+    closeModal.addEventListener('click', () => {
+      cartModal.classList.remove('active');
+    });
+    window.addEventListener('click', (e) => {
+      if (e.target === cartModal) {
+        cartModal.classList.remove('active');
+      }
+    });
+    // Добавление товара в корзину
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const productElem = e.target.closest('.product');
+        const id = productElem.getAttribute('data-id');
+        const name = productElem.getAttribute('data-name');
+        const price = Number(productElem.getAttribute('data-price'));
+        const existingItem = cart.find(item => item.id === id);
+        if (existingItem) {
+          existingItem.quantity++;
+        } else {
+          cart.push({ id, name, price, quantity: 1 });
+        }
+        updateCartDisplay();
+        e.target.textContent = 'Добавлено!';
+        setTimeout(() => {
+          e.target.textContent = 'Купить';
+        }, 1000);
+      });
+    });
+    // Плавная прокрутка для ссылок навигации
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetID = this.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetID);
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+    // Параллакс-эффект для геро-секции
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.pageYOffset;
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        hero.style.backgroundPositionY = scrollPosition * 0.5 + 'px';
+      }
+    });
+  </script>
+</body>
+</html>
